@@ -1,0 +1,102 @@
+package com.deepfocus.as3.display.video.dfvideoplayer.ui
+{
+	import flash.display.MovieClip;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	public class SoundSlider extends Sprite
+	{
+		private var _mc				:MovieClip;
+		private var _bar			:MovieClip;
+		private var _line			:MovieClip;
+		private var _scrubTimer		:Timer;
+		private var _value			:Number;
+		private var _callBack		:Function;
+		
+		public function SoundSlider($mc:MovieClip, $callBack:Function)
+		{
+			_mc = $mc;
+			_callBack = $callBack;
+			_line = $mc.line;
+			_bar = $mc.bar;
+			addChild(_mc);
+			addEventListener(Event.ADDED_TO_STAGE, _init, false, 0, true);
+		}
+		
+		
+		public function get maxY():Number { 
+			return (_line.height + _line.y ) - _bar.height; 
+		}
+		
+		public function get minY():Number { 
+			return _line.y; 
+		}
+		
+		public function set value($value:Number):void
+		{
+			_value =  1 - $value;
+			_bar.y = (_value * maxY)+_line.y;
+		}
+		
+		public function get value():Number { return _value; }
+		public function get mc():MovieClip { return _mc; }
+		private function _init($e:Event):void
+		{
+			_bar.addEventListener(MouseEvent.MOUSE_DOWN, onBarMouseDown, false, 0, true);
+		}
+		
+		private function onBarMouseDown($e:MouseEvent):void
+		{
+			trace(this, "onBarMouseDown" );
+			//_bar.removeEventListener(MouseEvent.MOUSE_DOWN, onBarMouseDown, false);
+			this.addEventListener(MouseEvent.MOUSE_UP, onBarMouseUp, false, 0, true);
+
+			_scrubTimer = new Timer(100);
+			_scrubTimer.addEventListener(TimerEvent.TIMER, onMoveSliderBar, false, 0, true);
+			_scrubTimer.start();	
+		}
+		private function onMoveSliderBar($e:TimerEvent):void
+		{
+			var destY:Number = _mc.mouseY;
+			if (destY < minY) destY = minY;
+			else if (destY > maxY) destY = maxY;
+			_bar.y = destY;
+			
+			var ratio:Number = 1 - (_bar.y / maxY);
+			_value = ratio;
+			_callBack(_value);
+		}
+		private function onBarMouseUp($e:MouseEvent):void
+		{
+			killTimer();
+			this.removeEventListener(MouseEvent.MOUSE_UP, onBarMouseUp, false);
+			//_bar.addEventListener(MouseEvent.MOUSE_DOWN, onBarMouseDown, false, 0, true);
+		}
+		
+		public function killTimer():void
+		{
+			if(_scrubTimer){
+			_scrubTimer.stop();	
+			_scrubTimer.removeEventListener(TimerEvent.TIMER, onMoveSliderBar, false);
+			_scrubTimer =null;
+			}
+		}
+		
+		public function kill():void
+		{
+			_mc.removeEventListener(MouseEvent.MOUSE_UP, onBarMouseUp, false);
+			killTimer();
+			var l:int =  this.numChildren;
+			var i:int = 0;
+			for ( i = 0; i < l; i++ )
+			{
+				var c:MovieClip = MovieClip(removeChild(getChildAt(i)));
+				c = null;
+			}
+		}
+
+	}
+}

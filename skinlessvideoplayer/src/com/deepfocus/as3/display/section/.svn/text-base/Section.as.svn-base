@@ -1,0 +1,46 @@
+package com.egraphicsNY.as3.display.section{
+	import flash.display.Sprite;
+	import flash.events.Event;
+	
+	public class Section extends Sprite {
+		
+		public function Section() {
+			addEventListener(Event.ADDED_TO_STAGE, onStage);
+		}
+		
+		protected function init():void {
+			onResize( null );
+		}
+
+		public function animateIn():void {
+			
+		}
+
+		public function animateOut():void {
+			
+		}
+
+		protected function onResize(e:Event):void {
+			
+		}
+		
+		protected function offStage(e:Event):void {
+			//trace( "Section OFFSTAGE" );
+			removeEventListener(Event.REMOVED_FROM_STAGE, offStage);
+			stage.removeEventListener(Event.RESIZE, onResize);
+			dispatchEvent(new Event(Event.COMPLETE));
+			
+			addEventListener(Event.ADDED_TO_STAGE, onStage);
+		}
+
+		protected function onStage(e:Event):void {
+			//trace ("section on stage" );
+			removeEventListener(Event.ADDED_TO_STAGE, onStage);
+			
+			addEventListener(Event.REMOVED_FROM_STAGE, offStage);
+			stage.addEventListener(Event.RESIZE, onResize);
+			
+			init();
+		}
+	}
+}

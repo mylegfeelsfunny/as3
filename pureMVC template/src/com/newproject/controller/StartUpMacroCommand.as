@@ -1,0 +1,1 @@
+﻿package com.newproject.controller{	import org.puremvc.as3.patterns.command.MacroCommand;		public final class StartUpMacroCommand extends MacroCommand	{		override protected function initializeMacroCommand():void		{			super.initializeMacroCommand();						addSubCommand(ViewComponentsCommand);			addSubCommand(DataComponentsCommand);		}	}}

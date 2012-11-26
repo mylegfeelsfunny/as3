@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link type="text/css" media='all' rel="stylesheet" href="assets/css/style.css" />
+	</head>
+	<body>
+		
+		<div id="videoplayer"></div>
+		
+	</body>
+	<script type="text/javascript" src="assets/js/swfobject.js"></script>
+	<script type='text/javascript' src='assets/js/jquery-1.6.4.min.js'></script>
+	<script type='text/javascript' src='assets/js/controls.js'></script>
+	<script type='text/javascript'>
+		var videoplayer = $("#videoplayer");
+		var flashContainer = $('<div />').attr({'id':'flashContainer'}).appendTo(videoplayer);
+		$('<div />').attr({'id':'flash'}).css({'z-index':'0'}).appendTo(flashContainer);
+		
+		var flash = document.getElementById('flash');
+		var flashvars = {
+			path:"assets/media/flv/bringbackrecess.f4v",
+			swf:"assets/swf/controls.swf",
+			width:videoplayer.width(),
+			height:videoplayer.height()
+		};
+		var params 				= {
+			'wmode':'transparent',
+			'allowScriptAccess':'always',
+			'allowFullScreen':true
+		};
+		var attributes 			= {};
+		swfobject.embedSWF("SkinlessVideoPlayer_Flex.swf", "flash", videoplayer.width(), videoplayer.height(), "10.0.0", "assets/swf/expressInstall.swf",flashvars,params,attributes);
+		
+				
+	</script>
+
+</html>	

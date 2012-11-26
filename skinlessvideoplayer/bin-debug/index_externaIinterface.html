@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link type="text/css" media='all' rel="stylesheet" href="assets/css/style.css" />
+	</head>
+	<body>
+		
+		<div id="videoplayer"></div>
+		
+	</body>
+	<script type="text/javascript" src="assets/js/swfobject.js"></script>
+	<script type='text/javascript' src='assets/js/jquery-1.6.4.min.js'></script>
+	<script type='text/javascript' src='assets/js/controls.js'></script>
+	<script type='text/javascript'>
+		var ticker;
+		var flashContainer;
+		var videoplayer = $("#videoplayer");
+		var flashContainer = $('<div />').attr({'id':'flashContainer'}).appendTo(videoplayer);
+		$('<div />').attr({'id':'flash'}).css({'z-index':'0'}).appendTo(flashContainer);
+		
+		var flash = document.getElementById('flash');
+		var flashvars = {
+			path:"assets/media/flv/bringbackrecess.f4v",
+			width:videoplayer.width(),
+			height:videoplayer.height()
+		};
+		var params 				= {
+			'wmode':'transparent',
+			'allowScriptAccess':'always',
+			'allowFullScreen':true
+		};
+		var attributes 			= {};
+		swfobject.embedSWF("skinlessvideoshell.swf", "flash", videoplayer.width(), videoplayer.height(), "10.0.0", "assets/swf/expressInstall.swf",flashvars,params,attributes);
+		
+		var controls = new Controls(videoplayer);
+
+		controls.addEventListener('resume', function() {
+            flashContainer.flashResumeHandler();
+		}); 
+		
+		controls.addEventListener('pause', function() {
+			flashContainer.flashPauseHandler();
+		}); 
+				
+		controls.addEventListener('scrubberchange', function(data) {
+			flashContainer.flashOnScrubHandler(data);
+		}); 
+
+		controls.addEventListener('scrubberstart', function(data) {
+		   flashContainer.flashOnInitScrubHandler();
+		}); 
+		controls.addEventListener('scrubberend', function(data) {
+		   flashContainer.flashOnEndScrubHandler();
+		});
+		
+		controls.addEventListener('fullscreen', function() {
+			flashContainer.flashFullScreenHandler();
+		});
+
+		controls.addEventListener('volumechange', function(data) {
+			flashContainer.flashVolumeChangeHandler(data);
+		}); 
+		
+		window.update = function(obj) {
+			controls.updateLoadedScrubber({x:obj.loaded});
+			controls.updateProgressScrubber({x:obj.progress});
+			controls.setTime(obj.time);
+		}		
+		
+		window.initVideoData = function(data) {
+		 	flashContainer = document.getElementById("flash");
+			controls.videoData(data);
+		}
+		
+		window.videoOver = function() {
+			console.log('videoOver')
+			controls.resetControls();
+		}
+		
+	</script>
+
+</html>	
